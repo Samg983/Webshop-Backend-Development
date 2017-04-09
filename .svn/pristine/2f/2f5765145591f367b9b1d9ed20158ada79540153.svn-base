@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="nl">
+    <?php
+    require_once './Head.php';
+
+    include_once './DAO/WinkelwagenDAO.php';
+    include_once './DAO/ProductDAO.php';
+    include_once './DAO/HoeveelheidDAO.php';
+    include_once './DAO/ProductHoeveelheidDAO.php';
+
+    $arrWinkelwagenItems = WinkelwagenDAO::getWinkelwagenItems();
+    ?>
+
+    <body class="hansHendrick">
+
+        <?php require_once './Upper.php'; ?>
+
+
+        <main class="wrapper">
+
+            <div class="row" style="margin-top:1em">
+                <h4 class="col s12  red-border">Winkelmandje</h4>
+            </div>
+
+            <div class="row">
+
+                <table class="col s12 striped">
+                    <thead>
+                        <tr style="font-size:1.1em">
+                            <th data-field="id">Product</th>
+                            <th data-field="description">Omschrijving</th>
+                            <th data-field="exclBtw">Excl BTW</th>
+                            <th data-field="inclBtw">Incl BTW</th>
+                            <th data-field="Aantal">Hoeveelheid</th>
+                            <th data-field="Totaal">Totaal</th>
+                            <th data-field="verwijder"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <?php
+                        foreach ($arrWinkelwagenItems as $item) {
+                            $product = ProductDAO::getProductById($item->getProductId())
+                            ?>
+                            <tr>
+                                <td><?php echo $product->getNaam(); ?></td>
+                                <td>Zachte smaak</td>
+                                <td><?php echo $product->getPrijsExclBtw(); ?></td>
+                                <td><?php echo $product->getPrijsInclBtw(); ?></td>
+                                <td>
+                                    <div class="input-field">
+                                        <select class="amount-drink">
+                                            <option value="1">250ml</option>
+                                            <option value="2">330ml</option>
+                                            <option value="3">500ml</option>
+                                            <option value="4">1000ml</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>€ 4,25</td>
+                                <td><i class="material-icons">delete</i></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+                <div class="divider"></div>
+            </div>
+
+        </main>
+
+        <?php
+        require_once './Footer.php';
+        ?>
+    </body>
+
+</html>

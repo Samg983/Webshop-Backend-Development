@@ -1,0 +1,28 @@
+<?php
+require_once './model/ProductTag.php';
+
+class ProductTagDAO {
+
+    public static function getProductTags() {
+        $tag1 = new ProductTag(1, 1);
+        $tag2 = new ProductTag(2, 1);
+        $tag3 = new ProductTag(3, 1);
+        $tag4 = new ProductTag(4, 1);
+
+        $arr = array($tag1, $tag2, $tag3, $tag4);
+        return $arr;
+    }
+
+    public static function getProductTagById($id) {
+        $arr = $this->getProductTags();
+
+        foreach ($arr as $value) {
+            if ($value->getProductTagId() == $id) {
+                return $value;
+            }
+        }
+    }
+
+}
+
+

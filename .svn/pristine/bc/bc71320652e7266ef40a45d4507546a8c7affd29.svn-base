@@ -1,0 +1,40 @@
+<?php
+
+require_once './model/WinkelwagenItem.php';
+
+class WinkelwagenDAO {
+
+    public static function getWinkelwagenItems() {
+        $winkelwagenItem1 = new WinkelwagenItem(2, 1, 3);
+        $winkelwagenItem2 = new WinkelwagenItem(1, 2, 2);
+
+        $items = array($winkelwagenItem1, $winkelwagenItem2);
+
+        return $items;
+    }
+
+    public static function getTotaalPrijsExclBtw() {
+        $items = self::getWinkelwagenItems();
+        $resultaat = 0.0;
+
+        foreach ($items as $item) {
+            $resultaat += $item->getTotaalPrijsExclBtw();
+        }
+        return $resultaat;
+    }
+
+    public static function getTotaalBtw() {
+        $items = self::getWinkelwagenItems();
+        $resultaat = 0.0;
+
+        foreach ($items as $item) {
+            $resultaat += $item->getTotaalBtw();
+        }
+        return $resultaat;
+    }
+
+    public static function getTotaalPrijsInclBtw() {
+        return self::getTotaalPrijsExclBtw() + self::getTotaalBtw();
+    }
+
+}

@@ -1,0 +1,28 @@
+<?php
+
+class ProductTag{
+    private $tagId;
+    private $productId;
+   
+    function getTagId() {
+        return $this->tagId;
+    }
+
+    function getProductId() {
+        return $this->productId;
+    }
+
+    function setTagId($tagId) {
+        $this->tagId = $tagId;
+    }
+
+    function setProductId($productId) {
+        $this->productId = $productId;
+    }
+
+    function __construct($tagId, $productId) {
+        $this->tagId = $tagId;
+        $this->productId = $productId;
+    }
+}
+?>

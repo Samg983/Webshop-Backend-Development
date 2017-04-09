@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="nl">
+
+    <?php require_once './Head.php';
+    
+    ?>
+    
+    <body class="hansHendrick">
+        <?php
+        require_once './Upper.php';
+
+
+        include_once './DAO/ProductDAO.php';
+        include_once './DAO/ProductHoeveelheidDAO.php';
+        include_once './DAO/HoeveelheidDAO.php';
+        include_once './DAO/TagDAO.php';
+        include_once './DAO/ProductTagDAO.php';
+        include_once './DAO/ReviewDAO.php';
+
+        $productId = $_GET['productId'];
+
+        $product = ProductDAO::getProductById($productId);
+
+        $arrProductHoeveelheid = ProductHoeveelheidDAO::getProductHoeveelheidByProductId($productId);
+
+        $arrProductTags = ProductTagDAO::getProductTagByProductId($productId);
+
+        //$arrProductPrijzen = $product->getProductPrijzenByProductId();
+         //echo '<pre>', var_dump($arrProductHoeveelheid), '</pre>';
+        ?>
+
+        <main class="wrapper ">
+
+            <div class="row" style="margin-top:1em">
+                <h4 class="col s12 red-border"><?php echo $product->getNaam(); ?></h4>
+            </div>
+
+            <div class="row">
+                <div class="col s12 m6 l6">
+                    <img alt="product" src="<?php echo $product->getLocatieFoto(); ?>" class="responsive-img" />
+                </div>
+
+                <div class="col s12 m6 l6">
+                    <p class="priceInclBtw mediumFont"><?php $priceInclBtw = number_format($arrProductHoeveelheid[0]->getPrijsInclBtw(), 2, '.', ' ');
+                    echo $priceInclBtw; ?><span style="font-size:.5em"> incl btw</span></p>
+                    <p class="priceExclBtw"><?php 
+                    $priceExclBtw = number_format($arrProductHoeveelheid[0]->getPrijsExclBtw(), 2, '.', ' ');
+                    echo $priceExclBtw; ?><span style="font-size:.5em"> excl btw</span></p>
+                    <form action="index.php" method="post">
+                        <div class="input-field col s12 m6 l6">
+                            <select class="amount-drink" name="gekozenHoeveelheid">
+                                <?php
+                                foreach ($arrProductHoeveelheid as $value) {
+
+
+                                    $hoeveelheidId = $value->getHoeveelheidId();
+                                    $hoeveelheid = HoeveelheidDAO::getHoeveelheidById($hoeveelheidId);
+                                    ?>
+                                <option data-exclbtw="<?php echo $value->getPrijsExclBtw(); ?>" data-btw="<?php echo $value->getBtw(); ?>" data-inclbtw="<?php echo $value->getPrijsInclBtw(); ?>" value="<?php echo $hoeveelheidId; ?>"><?php echo $hoeveelheid->getNaam(); ?></option>
+                                    <?php
+                                }
+                                ?>
+
+
+                            </select>
+                            <label>Selecteer je ultieme hoeveelheid</label>
+                        </div>
+
+                        <div class="input-field col s12 m6 l6">
+                            <input id="aantal" type="number" name="aantal" min="1" max="10" value="1">
+                            <label id="aantalLabel" for="aantal">Aantal</label>
+                        </div>
+                        <button type="submit" class="waves-effect waves-light btn full-width red darken-4"><i class="material-icons left">shopping_cart</i>In winkelmandje</button>
+                    </form>
+                    <ul class="collection">
+                        <?php
+                        foreach ($arrProductTags as $productTag) {
+                            $tag = TagDAO::getTagById($productTag->getTagId());
+                            ?>
+
+                            <li class="collection-item"><?php
+                                echo $tag->getTagNaam();
+                                ?></li>
+
+
+                        <?php } ?>
+
+
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12">
+                    <h5>Smoothie beschrijving</h5>
+                    <p class="small-margin-bottom product-description"><?php echo $product->getBeschrijving(); ?></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12">
+                    <h5>Reviews</h5>
+                    <h6 style="margin-top:1em">Algemene beoordeling</h6>
+                    <div class="stars">
+                        <i class="material-icons small red-text text-darken-4">stars</i>
+                        <i class="material-icons small red-text text-darken-4">stars</i>
+                        <i class="material-icons small red-text text-darken-4">stars</i>
+                        <i class="material-icons small red-text text-darken-4">stars</i>
+                        <i class="material-icons small grey-text text-lighten-2">stars</i>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+
+                <?php
+                $arrReviews = ReviewDAO::getReviewByProductId($productId);
+
+//echo '<pre>', var_dump($arrReviews), '</pre>';
+
+                foreach ($arrReviews as $review) {
+                    ?>
+                    <div class="col s12  card hoverable review">
+                        <h6><?php echo $review->getReviewTitel(); ?></h6>
+                        <p><?php echo $review->getKlantNaam(); ?></p>
+                        <div class="stars">
+                            <?php
+                            $aantalRood = $review->getAantalSterren();
+                            $aantalGrijs = 5 - $aantalRood;
+
+                            for ($i = 0; $i < $aantalRood; $i++) {
+                                ?>
+                                <i class="material-icons tiny red-text text-darken-4">stars</i>
+                                <?php
+                            }
+
+                            for ($j = 0; $j < $aantalGrijs; $j++) {
+                                ?>
+                                <i class="material-icons tiny grey-text text-lighten-2">stars</i>
+                            <?php } ?> 
+                        </div>
+                        <p><?php echo $review->getReviewTekst(); ?></p>
+                    </div>
+                <?php } ?>
+
+            </div>
+
+
+
+
+            <div class="row">
+                <div class="col s12">
+                    <h6>Schrijf een review over dit product en wie weet wint u wel elke dag een verse smoothie gedurende 2 weken!</h6>
+                    <form class="" method="post">
+                        <div class="input-field col s12 m4">
+                            <input id="first_name" type="text" class="validate">
+                            <label for="first_name">Voornaam</label>
+                        </div>
+                        <div class="input-field col s12 m4">
+                            <input id="last_name" type="text" class="validate">
+                            <label for="last_name">Achternaam</label>
+                        </div>
+
+                        <div class="input-field col s12 m4">
+                            <input id="email" type="email" class="validate">
+                            <label for="email" data-error="Gelieve een juist email adres in te vullen">Email</label>
+                        </div>
+                        <div class="input-field col s12 m6">
+                            <textarea id="reviewtext" class="materialize-textarea"></textarea>
+                            <label for="reviewtext ">Uw ongezoute mening</label>
+                        </div>
+                        <div class="input-field col s12 m6">
+                            <p>Selecteer het aantal sterren dat dit product verdient</p>
+                            <div>
+                                <i class="material-icons small grey-text text-lighten-2 select-stars">stars</i>
+                                <i class="material-icons small grey-text text-lighten-2 select-stars">stars</i>
+                                <i class="material-icons small grey-text text-lighten-2 select-stars">stars</i>
+                                <i class="material-icons small grey-text text-lighten-2 select-stars">stars</i>
+                                <i class="material-icons small grey-text text-lighten-2 select-stars">stars</i>
+                            </div>
+                            <!--<div class="rateit-material rateit rateit-font" data-rateit-mode="font" data-rateit-icon="stars" style="font-family:'Material Icons'">
+                            <button id="rateit-reset-2" type="button" data-role="none" class="rateit-reset" aria-label="reset rating" aria-controls="rateit-range-2"><span></span></button>
+                            <div id="rateit-range-2" class="rateit-range" tabindex="0" role="slider" aria-label="rating" aria-owns="rateit-reset-2" aria-valuemin="0" aria-valuemax="5" aria-valuenow="1" aria-readonly="false">
+                                    <div class="rateit-empty">starsstarsstarsstarsstars</div>
+                                    <div class="rateit-selected" style="width: 24px; display: block;">starsstarsstarsstarsstars</div>
+                                    <div class="rateit-hover" style="width: 0px; display: none;">starsstarsstarsstarsstars</div>
+                            </div>
+                    </div>-->
+                        </div>
+                        <button class="btn waves-effect waves-light red darken-4" type="submit" name="action">Submit
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <?php require './Footer.php'; ?>
+    </body>
+
+</html>

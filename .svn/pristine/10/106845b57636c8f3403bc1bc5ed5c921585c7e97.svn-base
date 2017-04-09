@@ -1,0 +1,27 @@
+<?php
+
+require_once './model/Categorie.php';
+
+class CategorieDAO {
+
+    public static function getCategorieen() {
+        $groente = new Categorie(1, "Groente");
+        $fruit = new Categorie(2, "Fruit");
+        $hartig = new Categorie(3, "Hartig");
+        $toebehoren = new Categorie(4, "Toebehoren");
+
+        $arr = array($groente, $fruit, $hartig, $toebehoren);
+        return $arr;
+    }
+
+    public static function getCategorieById($id) {
+        $arr = $this->getCategorieen();
+
+        foreach ($arr as $value) {
+            if ($value->getCategorieId() == $id) {
+                return $value;
+            }
+        }
+    }
+
+}

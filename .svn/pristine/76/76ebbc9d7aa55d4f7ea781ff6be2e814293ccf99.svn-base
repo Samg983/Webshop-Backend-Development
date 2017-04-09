@@ -1,0 +1,65 @@
+<?php
+
+require_once './DAO/ProductDAO.php';
+
+class WinkelwagenItem {
+
+    private $productId;
+    private $aantal;
+    private $gekozenHoeveelheid;
+
+    function getProductId() {
+        return $this->productId;
+    }
+
+    function getAantal() {
+        return $this->aantal;
+    }
+
+    function setProductId($productId) {
+        $this->productId = $productId;
+    }
+
+    function setAantal($aantal) {
+        $this->aantal = $aantal;
+    }
+
+    function getGekozenHoeveelheid() {
+        return $this->gekozenHoeveelheid;
+    }
+
+    function setGekozenHoeveelheid($gekozenHoeveelheid) {
+        $this->gekozenHoeveelheid = $gekozenHoeveelheid;
+    }
+    
+     function __construct($aantal, $productId, $gekozenHoeveelheid) {
+        $this->productId = $productId;
+        $this->aantal = $aantal;
+        $this->gekozenHoeveelheid = $gekozenHoeveelheid;
+    }
+    
+
+    
+    function getProduct() {
+        return ProductDAO::getProductById($this->productId);
+    }
+
+    public function getTotaalPrijsExclBtw() {
+        $product = $this->getProduct();
+
+        return $product->getPrijsExclBtw() * $this->aantal;
+    }
+
+    public function getTotaalBtw() {
+        $product = $this->getProduct();
+        
+        $prijsExclBtw = $this->getTotaalPrijsExclBtw();
+        
+        return $prijsExclBtw * ($product->getBtwPercentage()/100); 
+    }
+
+    public function getTotaalPrijsInclBtw() {
+        return $this->getTotaalPrijsExclBtw() + $this->getTotaalBtw();    
+    }
+
+}

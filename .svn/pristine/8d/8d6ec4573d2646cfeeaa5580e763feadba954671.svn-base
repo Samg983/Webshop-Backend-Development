@@ -1,0 +1,91 @@
+<?php
+include_once './model/WinkelwagenItem.php';
+include_once './DAO/Verbinding/DatabaseFactory.php';
+
+class WinkelwagenItemDAO {
+
+    private static function getVerbinding() {
+        return DatabaseFactory::getDatabase();
+    }
+
+    public static function getWinkelwagenItems() {
+        $resultaat = self::getVerbinding()->voerSqlQueryUit("SELECT * FROM WinkelwagenItem");
+        $resultatenArray = array();
+        for ($index = 0; $index < $resultaat->num_rows; $index++) {
+            $databaseRij = $resultaat->fetch_array();
+            $nieuw = self::converteerRijNaarObject($databaseRij);
+            $resultatenArray[$index] = $nieuw;
+        }
+        return $resultatenArray;
+    }
+
+    public static function getWinkelwagenItemByProductId($productId) {
+        $resultaat = self::getVerbinding()->voerSqlQueryUit("SELECT * FROM WinkelwagenItem WHERE productId ='?'", array($productId));
+        $resultatenArray = array();
+        for ($index = 0; $index < $resultaat->num_rows; $index++) {
+            $databaseRij = $resultaat->fetch_array();
+            $nieuw = self::converteerRijNaarObject($databaseRij);
+            $resultatenArray[$index] = $nieuw;
+        }
+        return $resultatenArray;
+    }
+
+    public static function getWinkelwagenItemById($id) {
+        $resultaat = self::getVerbinding()->voerSqlQueryUit("SELECT * FROM WinkelwagenItem WHERE reviewId=?", array($id));
+        if ($resultaat->num_rows == 1) {
+            $databaseRij = $resultaat->fetch_array();
+            return self::converteerRijNaarObject($databaseRij);
+        } else {
+            //Er is waarschijnlijk iets mis gegaan
+            return false;
+        }
+    }
+    
+    public static function getTotaalPrijsExclBtw() {
+        $items = self::getWinkelwagenItems();
+        $resultaat = 0.0;
+
+        foreach ($items as $item) {
+            $resultaat += $item->getTotaalPrijsExclBtw();
+        }
+        return $resultaat;
+    }
+
+    public static function getTotaalBtw() {
+        $items = self::getWinkelwagenItems();
+        $resultaat = 0.0;
+
+        foreach ($items as $item) {
+            $resultaat += $item->getTotaalBtw();
+        }
+        return $resultaat;
+    }
+
+    public static function getTotaalPrijsInclBtw() {
+        return self::getTotaalPrijsExclBtw() + self::getTotaalBtw();
+    }
+
+    public static function insert($winkelwagenItem) {
+        return self::getVerbinding()->voerSqlQueryUit("INSERT INTO WinkelwagenItem(productId, aantal, gekozenHoeveelheidId) VALUES ('?', '?','?')", array($winkelwagenItem->getProductId(), $winkelwagenItem->getAantal(), $winkelwagenItem->getGekozenHoeveelheidId()));
+    }
+
+    public static function deleteById($id) {
+        return self::getVerbinding()->voerSqlQueryUit("DELETE FROM WinkelwagenItem WHERE winkelwagenItemId=?", array($id));
+    }
+
+    public static function delete($winkelwagenItem) {
+        return self::deleteById($winkelwagenItem->getWinkelwagenItemId());
+    }
+
+    public static function update($winkelwagenItem) {
+        return self::getVerbinding()->voerSqlQueryUit("UPDATE WinkelwagenItem SET productId='?', aantal='?', gekozenHoeveelheidId='?' WHERE winkelwagenItemId=?", array($winkelwagenItem->getProductId(), $winkelwagenItem->getAantal(), $winkelwagenItem->getGekozenHoeveelheidId(), $winkelwagenItem->getWinkelwagenItemId()));
+    }
+
+    protected static function converteerRijNaarObject($databaseRij) {
+        return new WinkelwagenItem($databaseRij['winkelwagenItemId'], $databaseRij['productId'], $databaseRij['aantal'],$databaseRij['gekozenHoeveelheidId']);
+    }
+
+}
+
+
+

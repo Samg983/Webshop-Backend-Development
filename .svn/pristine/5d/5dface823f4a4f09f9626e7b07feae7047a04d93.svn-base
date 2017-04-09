@@ -1,0 +1,52 @@
+<?php
+
+class ProductHoeveelheid{
+    private $productHoeveelheidID;
+    private $hoeveelheidId;
+    private $productId;
+    private $prijs;
+    
+    function getProductHoeveelheidID() {
+        return $this->productHoeveelheidID;
+    }
+
+    function getHoeveelheidId() {
+        return $this->hoeveelheidId;
+    }
+
+    function getProductId() {
+        return $this->productId;
+    }
+
+    function getPrijs() {
+        return $this->prijs;
+    }
+
+    function setProductHoeveelheidID($producthoeveelheidID) {
+        $this->producthoeveelheidID = $producthoeveelheidID;
+    }
+
+    function setHoeveelheidId($hoeveelheidId) {
+        $this->hoeveelheidId = $hoeveelheidId;
+    }
+
+    function setProductId($productId) {
+        $this->productId = $productId;
+    }
+
+    function setPrijs($prijs) {
+        $this->prijs = $prijs;
+    }
+
+    function __construct($producthoeveelheidID, $hoeveelheidId, $productId, $prijs) {
+        $this->producthoeveelheidID = $producthoeveelheidID;
+        $this->hoeveelheidId = $hoeveelheidId;
+        $this->productId = $productId;
+        $this->prijs = $prijs;
+    }
+
+    
+    
+}
+
+?>

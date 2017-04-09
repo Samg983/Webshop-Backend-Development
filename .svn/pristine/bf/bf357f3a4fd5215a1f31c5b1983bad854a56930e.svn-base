@@ -1,0 +1,37 @@
+<?php
+
+require_once './model/ProductHoeveelheid.php';
+
+class ProductHoeveelheidDAO {
+
+    public static function getProductHoeveelheden() {
+        $een = new ProductHoeveelheid(1, 1, 1, "3");
+        $twee = new ProductHoeveelheid(2, 2, 1, "5");
+        $drie = new ProductHoeveelheid(3, 3, 1, "6");
+        $vier = new ProductHoeveelheid(4, 4, 1, "7");
+
+        $arr = array($een, $twee, $drie, $vier);
+        return $arr;
+    }
+
+    public static function getProductHoeveelheidById($id) {
+        $arr = $this->getProductHoeveelheden();
+
+        foreach ($arr as $value) {
+            if ($value->getProductHoeveelheidId() == $id) {
+                return $value;
+            }
+        }
+    }
+    
+    public static function getProductHoeveelheidByProductId($productId) {
+        $arr = $this->getProductHoeveelhedenHoeveelheden();
+
+        foreach ($arr as $value) {
+            if ($value->getProductId() == $productId) {
+                return $value;
+            }
+        }
+    }
+
+}

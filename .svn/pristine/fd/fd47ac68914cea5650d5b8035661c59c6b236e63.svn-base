@@ -1,0 +1,26 @@
+<?php
+require_once './model/Tag.php';
+
+class TagDAO {
+
+    public static function getTags() {
+        $tag1 = new Tag(1, "Tag1");
+        $tag2 = new Tag(2, "Tag2341241234");
+        $tag3 = new Tag(3, "Tag3");
+        $tag4 = new Tag(4, "Tag4");
+
+        $arr = array($tag1, $tag2, $tag3, $tag4);
+        return $arr;
+    }
+
+    public static function getTagById($id) {
+        $arr = self::getTags();
+
+        foreach ($arr as $value) {
+            if ($value->getTagId() == $id) {
+                return $value;
+            }
+        }
+    }
+
+}

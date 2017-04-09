@@ -1,0 +1,26 @@
+<?php
+
+require_once './model/Product.php';
+
+class ProductDAO {
+
+    public static function getProducts() {
+        $product1 = new Product(1, "Beetroot Lime", "Tralalala", 21, 2, "img/smoothie_strawberry.jpeg", 1);
+        $product2 = new Product(2, "Strawberry Mango", "beschrijving", 21, 2, "img/smoothie.jpg", 1);
+        $product3 = new Product(3, "Carrot", "beschrijving", 21, 2, "img/smoothie.jpg", 1);
+
+        $arr = array($product1, $product2, $product3);
+        return $arr;
+    }
+
+    public static function getProductById($id) {
+        $arr = self::getProducts();
+
+        foreach ($arr as $value) {
+            if ($value->getProductId() == $id) {
+                return $value;
+            }
+        }
+    }
+
+}

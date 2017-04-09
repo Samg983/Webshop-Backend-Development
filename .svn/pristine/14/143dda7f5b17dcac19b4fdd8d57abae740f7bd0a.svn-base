@@ -1,0 +1,34 @@
+<?php
+
+require_once './DAO/ProductDAO.php';
+
+class WinkelwagenItem{
+    private $productId;
+    private $aantal;
+    
+    function getProductId() {
+        return $this->productId;
+    }
+
+    function getAantal() {
+        return $this->aantal;
+    }
+
+    function setProductId($productId) {
+        $this->productId = $productId;
+    }
+
+    function setAantal($aantal) {
+        $this->aantal = $aantal;
+    }
+
+    function __construct($aantal, $productId) {
+        $this->productId = $productId;
+        $this->aantal = $aantal;
+    }
+    
+    function getProduct(){
+       return ProductDAO::getProductById($this->productId);
+    }
+
+}

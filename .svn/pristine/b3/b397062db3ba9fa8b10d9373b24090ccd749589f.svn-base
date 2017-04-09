@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="nl">
+
+    <?php
+    require_once './Head.php';
+    ?>
+
+    <body class="hansHendrick">
+        <?php
+        require_once './Upper.php';
+        ?>
+
+
+        <main class="wrapper ">
+
+            <div class="row" style="margin-top:1em">
+                <h4 class="col s12  red-border">Admin page</h4>
+                <p>Bent u geen administrator, gelieve naar een andere pagina te surfen</p>
+            </div>
+
+
+            <div class="row valign-wrapper">
+                <div class="col s12 m6 pull-m3 ">
+                    <div class="input-field">
+                        <input id="user_name" type="text" class="validate">
+                        <label for="user_name">Gebruikersnaam</label>
+                    </div>
+                    <div class="input-field">
+                        <input id="password" type="password" class="validate">
+                        <label for="password">Password</label>
+                    </div>
+                    <a href="admin-detail.php" class="btn waves-effect waves-light red darken-4 full-width">Send</a>
+                    <!--<button id="logInAdmin" class="btn waves-effect waves-light red darken-4 full-width" type="submit" name="action">Log-in
+                        <i class="material-icons right">send</i>
+                    </button>-->
+                </div>
+            </div>
+
+        </main>
+
+<?php require_once './Footer.php'; ?>
+    </body>
+
+</html>

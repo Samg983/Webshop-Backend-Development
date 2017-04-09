@@ -1,0 +1,31 @@
+<?php
+
+include_once './DAO/WinkelwagenItemDAO.php';
+
+if (isset($_POST["productId"])) {
+    $arrWWI = WinkelwagenItemDAO::getWinkelwagenItems();
+
+
+    $productId = $_POST["productId"];
+    $aantal = $_POST["aantal"];
+    $gekozenHoeveelheidId = $_POST["gekozenHoeveelheid"];
+
+    $winkelwagenItem = new WinkelwagenItem(0, $productId, $aantal, $gekozenHoeveelheidId);
+
+    if (empty($arrWWI)) {
+        WinkelwagenItemDAO::insert($winkelwagenItem);
+    } else {
+        foreach ($arrWWI as $item) {
+            if ($item->getProductId() == $productId && $item->getGekozenHoeveelheidId() === $gekozenHoeveelheidId) {
+                $updateWinkelwagen = new WinkelwagenItem($item->getWinkelwagenItemId(), $productId, $aantal, $gekozenHoeveelheidId);
+                $lol = WinkelwagenItemDAO::update($updateWinkelwagen);
+            } 
+        }
+    }
+
+
+    header("Location: winkelmandje.php");
+}
+
+
+
