@@ -15,11 +15,12 @@ $arrCategorieen = CategorieDAO::getCategorieen();
             <input id="search" type="search" required>
             <label class="label-icon" for="search"><i class="material-icons">search</i></label>
             <i class="material-icons">close</i>
+            <div class="search-results"></div>
         </div>
 
 
     </li>
-    <li><a class="waves-effect waves-red" href="#">Welkom gast<i class="material-icons">mood</i></a></li>
+    <li><a class="waves-effect waves-red disabled" href="">Welkom gast!<i class="material-icons">mood</i></a></li>
     <li><a class="waves-effect waves-red" href="index.php">Home <i class="material-icons">store</i></a></li>
     <li class="no-padding">
         <ul class="collapsible collapsible-accordion">

@@ -7,6 +7,16 @@ include_once './DAO/ProductTagDAO.php';
 include_once './DAO/TagDAO.php';
 
 if(isset($_POST["postcheckProduct"])){
+    addProduct(); 
+}
+
+if(isset($_POST["postcheckTag"])){
+    $tagName = $_POST["tagName"];
+    TagDAO::insert(new Tag(0, $tagName));
+    header("Location: admin-detail.php#add-tags");
+}
+
+function addProduct(){
     $productName = $_POST["productName"];
     $productDescription = $_POST["productDescription"];
     $priceExclBtw = $_POST["priceExclBtw"];
@@ -14,9 +24,7 @@ if(isset($_POST["postcheckProduct"])){
     $tags = $_POST["tags"];
     $img =  $_FILES["imgProduct"]["tmp_name"];
     
-  
-   
-    
+
     move_uploaded_file($img, "./img/".$_FILES["imgProduct"]["name"]);
     
     $pathImage = "./img/".$_FILES["imgProduct"]["name"];
@@ -42,13 +50,6 @@ if(isset($_POST["postcheckProduct"])){
     }
     header("Location: admin-detail.php#all-products");
 }
-
-if(isset($_POST["postcheckTag"])){
-    $tagName = $_POST["tagName"];
-    TagDAO::insert(new Tag(0, $tagName));
-    header("Location: admin-detail.php#add-tags");
-}
-
 
  
 

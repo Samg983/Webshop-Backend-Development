@@ -6,6 +6,7 @@
     include_once './DAO/HoeveelheidDAO.php';
     include_once './DAO/CategorieDAO.php';
     include_once './DAO/TagDAO.php';
+    include_once './DAO/ProductTagDAO.php';
     include_once './DAO/ProductHoeveelheidDAO.php';
     require_once './Head.php';
     ?>
@@ -25,6 +26,7 @@
                 <ul id="tabs-swipe-demo" class="tabs">
                     <li class="tab col s3"><a class="active" href="#all-products">Alle producten</a></li>
                     <li class="tab col s3"><a href="#add-products">Product toevoegen</a></li>
+                    <li class="tab col s3" ><a href="#edit-products">Product aanpassen</a></li>
                     <li class="tab col s3"><a href="#add-tags">Tags toevoegen</a></li>
                 </ul>
                 <div id="all-products" class="col s12">
@@ -41,8 +43,10 @@
                                 <div class="card">
                                     <div class="card-image">
                                         <img class="" src="<?php echo $product->getLocatieFoto(); ?>">
-                                        
-                                        <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">remove</i></a>
+
+                                        <form method="post" action="admin-detail.php#edit-products?editProductId=<?php echo $product->getProductId(); ?>">
+                                            <button class="btn-floating halfway-fab waves-effect waves-light red" type="submit"><i class="material-icons">mode_edit</i></a></button>
+                                        </form>
                                     </div>
                                     <div class="card-content">
                                         <span class="card-title black-text"><a href="product_detail.php?productId=<?php echo $product->getProductId(); ?>" target="_blank"><?php echo $product->getNaam(); ?></a></span>
@@ -51,7 +55,7 @@
                                     <div class="card-tabs">
                                         <ul class="tabs tabs-fixed-width">
                                             <li class="tab"><a class="active" href="#product-price-<?php echo $product->getProductId(); ?>">Prijzen</a></li>
-                                            <li class="tab"><a href="#stock-<?php echo $product->getProductId(); ?>">Voorraad</a></li>
+                                            <li class="tab"><a href="#tags-<?php echo $product->getProductId(); ?>">Tags</a></li>
                                         </ul>
                                     </div>
                                     <div class="card-content grey lighten-4">
@@ -77,7 +81,20 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div id="stock-<?php echo $product->getProductId(); ?>">5</div>
+                                        <div id="tags-<?php echo $product->getProductId(); ?>">
+                                            <ul>
+                                                <?php
+                                                $arrProductTags = ProductTagDAO::getProductTagByProductId($product->getProductId());
+                                                foreach ($arrProductTags as $productTag) {
+                                                    ?>
+                                                    <li><?php
+                                                        $tag = TagDAO::getTagById($productTag->getTagId());
+
+                                                        echo $tag->getTagNaam();
+                                                        ?></li>  
+                                                    <?php } ?>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -152,27 +169,105 @@
                     </div>
                 </div>
 
+
+                <div id="edit-products" class="col s12">
+                    <div class="row">
+                        <div class="input-field col s12 m4">
+                            <form method="post" action="admin-detail.php#edit-products">
+                                <select onchange="this.form.submit()" name="editProduct">
+                                    <?php
+                                    foreach ($arrAllProducts as $product) {
+                                        ?>
+                                        <option value="<?php echo $product->getProductId(); ?>"><?php echo $product->getNaam(); ?></option>
+                                    <?php } ?>
+                                </select>
+                                <label>Product</label>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <form action="addProductToProducts.php" method="post" enctype="multipart/form-data">
+                            <div class="input-field col s12 ">
+                                <input id="product_name" type="text" name="productName">
+                                <label for="product_name">Product naam</label>
+                            </div>
+                            <div class="input-field col s12 ">
+                                <input id="price_excl_btw" type="text" name="priceExclBtw">
+                                <label for="price_excl_btw">Prijs excl btw</label>
+                            </div>
+
+                            <div class="input-field col s12 ">
+                                <select name="categorie">
+<?php
+$arrCategorieen = CategorieDAO::getCategorieen();
+foreach ($arrCategorieen as $categorie) {
+    ?>
+                                        <option value="<?php echo $categorie->getCategorieId(); ?>"><?php echo $categorie->getNaam(); ?></option>
+                                    <?php } ?>
+                                </select>
+                                <label>Categorie</label>
+                            </div>
+
+
+
+                            <div class="input-field col s12">
+                                <textarea id="product_description" class="materialize-textarea" name="productDescription"></textarea>
+                                <label for="product_description ">Product beschrijving</label>
+                            </div>
+
+                            <div class="input-field col s12">
+                                <select multiple name="tags[]">
+                                    <option value="" disabled selected>Kies tags</option>
+<?php
+$arrTags = TagDAO::getTags();
+
+foreach ($arrTags as $tag) {
+    ?>
+                                        <option value="<?php echo $tag->getTagId(); ?>"><?php echo $tag->getTagNaam(); ?></option>
+                                    <?php } ?>
+                                </select>
+                                <label>Tags</label>
+                            </div>
+
+                            <div class="file-field input-field col s12">
+                                <div class="btn">
+                                    <span>Photo</span>
+                                    <input type="file" name="imgProduct">
+                                </div>
+                                <div class="file-path-wrapper">
+                                    <input class="file-path validate" type="text">
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="postcheckEditProduct" value="true">
+                            <button id="editProducts" class="btn waves-effect waves-light red darken-4 full-width" type="submit">Pas product aan
+                                <i class="material-icons left">mode_edit</i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
                 <div id="add-tags" class="col s12">
-                    
-                        <table class="striped">
-                            <thead>
+
+                    <table class="striped">
+                        <thead>
+                            <tr>
+                                <th>tagId</th>
+                                <th>Naam</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+<?php foreach ($arrTags as $tag) { ?>
                                 <tr>
-                                    <th>tagId</th>
-                                    <th>Naam</th>
-                                    <th></th>
+                                    <td><?php echo $tag->getTagId(); ?></td>
+                                    <td><?php echo $tag->getTagNaam(); ?></td>
+                                    <td id="deleteTag"><i class="material-icons" >delete</i></td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($arrTags as $tag) { ?>
-                                    <tr>
-                                        <td><?php echo $tag->getTagId(); ?></td>
-                                        <td><?php echo $tag->getTagNaam(); ?></td>
-                                        <td id="deleteTag"><i class="material-icons" >delete</i></td>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    
+<?php } ?>
+                        </tbody>
+                    </table>
+
                     <form action="addProductToProducts.php" method="post">
                         <div class="row">
                             <div class="input-field col s12 m4">
@@ -191,7 +286,7 @@
                 </div>
             </section>
         </main>
-        <?php require_once './Footer.php'; ?>
+<?php require_once './Footer.php'; ?>
     </body>
 
 </html>
